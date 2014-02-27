@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns       = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "com.jaraunio.liberator"
+        versionCode = "10"
+        version     = "0.0.1">
+ 
+    <name>LIBerator</name>
+ 
+    <description>
+        E-reader app for students
+    </description>
+ 
+    <author href="http://www.linkedin.com/pub/johannes-raunio/2a/131/a25" email="johannes.raunio@gmail.com">
+        Johannes Raunio
+    </author>
+ 
+    <feature name="http://api.phonegap.com/1.0/file"/>
+    <feature name="http://api.phonegap.com/1.0/media"/>
+    <feature name="http://api.phonegap.com/1.0/network"/>
+    <feature name="http://api.phonegap.com/1.0/notification"/>
+ 
+</widget>
