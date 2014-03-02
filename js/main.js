@@ -3,6 +3,7 @@ var app = {
 	initialize : function() {
 		var self = this;
 		this.projectURL = /^#project\/(\d{1,})/;
+		this.newProjectURL = /^#newproject/;
 		self.registerEvents();
 		this.store = new MemoryStore(function() {
 			self.route();
@@ -13,23 +14,23 @@ var app = {
 		var self = this;
 		$(window).on('hashchange', $.proxy(this.route, this));
 		// Check of browser supports touch events...
-		if (document.documentElement.hasOwnProperty('ontouchstart')) {
+		//if (document.documentElement.hasOwnProperty('ontouchstart')) {
 			// ... if yes: register touch event listener to change the "selected" state of the item
-			$('body').on('touchstart', 'a', function(event) {
-				$(event.target).addClass('tappable-active');
-			});
-			$('body').on('touchend', 'a', function(event) {
-				$(event.target).removeClass('tappable-active');
-			});
-		} else {
+			//$('body').on('touchstart', 'a', function(event) {
+				//$(event.target).addClass('tappable-active');
+			//});
+			//$('body').on('touchend', 'a', function(event) {
+				//$(event.target).removeClass('tappable-active');
+			//});
+		//} else {
 			// ... if not: register mouse events instead
-			$('body').on('mousedown', 'a', function(event) {
-				$(event.target).addClass('tappable-active');
-			});
-			$('body').on('mouseup', 'a', function(event) {
-				$(event.target).removeClass('tappable-active');
-			});
-		}
+			//$('body').on('mousedown', 'a', function(event) {
+				//$(event.target).addClass('tappable-active');
+			//});
+			//$('body').on('mouseup', 'a', function(event) {
+				//$(event.target).removeClass('tappable-active');
+			//});
+		//}
 	},
 
 	route : function() {
@@ -37,26 +38,21 @@ var app = {
 		var self = this;
 		var hash = window.location.hash;
 		if (!hash) {
-			if (this.homePage) {
-				console.log("Home page!");
-				this.slidePage(this.homePage);
-			} else {
-				console.log("New home page!");
-				this.homePage = new ProjectsView(this.store).render();
-				this.slidePage(this.homePage);
-			}
+			this.homePage = new ProjectsView(this.store).render();
+			this.slidePage(this.homePage);
 			return;
 		}
-		console.log(this.projectURL);
-		var match = hash.match(this.projectURL);
-		console.log(match);
-		if (match) {
-			self.store.findById(self.store.projects, Number(match[1]), function(project) {
-				console.log("Rendering Project." + project.title);
+		var matchProject = hash.match(this.projectURL);
+		if (matchProject) {
+			self.store.findById(self.store.projects, Number(matchProject[1]), function(project) {
 				self.slidePage(new ProjectView(project).render());
 			});
 		}
-		
+		var matchNewProject = hash.match(this.newProjectURL);
+		if (matchNewProject) {
+			self.slidePage(new NewProjectView().render());
+		}
+
 	},
 
 	slidePage : function(page) {
@@ -67,7 +63,9 @@ var app = {
 		if (!this.currentPage) {
 			$(page.el).attr('class', 'page stage-center').attr('id', 'homePage');
 			$('body').append(page.el);
-			this.currentPage = page;	
+			this.currentPage = page;
+			//trigger navbar reflow with custom event
+			window.dispatchEvent(new CustomEvent('resize', {}));
 			return;
 		}
 
@@ -94,67 +92,68 @@ var app = {
 			$(page.el).attr('class', 'page stage-center transition');
 			self.currentPage = page;
 		});
-
+		window.dispatchEvent(new CustomEvent('resize', {}));
 	},
 };
 
 app.initialize();
+(function() {
+		var init = function() {
+			// Make sure the dialog is in the DOM
+			if (document.querySelector('#my-dialog')) {
+				var dialog = new fries.Dialog({
+					selector : '#my-dialog',
+					callbackOk : function() {
+						var toast = new fries.Toast({
+							content : "Pressed OK",
+							duration : fries.Toast.duration.SHORT
+						});
 
-(function () {
-  var init = function () {
-    // Make sure the dialog is in the DOM
-    if (document.querySelector('#my-dialog')) {
-      var dialog = new fries.Dialog({
-        selector: '#my-dialog',
-        callbackOk: function () {
-          var toast = new fries.Toast({
-            content: "Pressed OK",
-            duration: fries.Toast.duration.SHORT
-          });
+						this.hide();
+						// this refers to the dialog
+					},
+					callbackCancel : function() {
+						var toast = new fries.Toast({
+							content : "Pressed Cancel",
+							duration : fries.Toast.duration.SHORT
+						});
 
-          this.hide(); // this refers to the dialog
-        },
-        callbackCancel: function () {
-          var toast = new fries.Toast({
-            content: "Pressed Cancel",
-            duration: fries.Toast.duration.SHORT
-          });
+						this.hide();
+						// this refers to the dialog
+					}
+				});
 
-          this.hide(); // this refers to the dialog
-        }
-      });
+				document.querySelector('#open-dialog').addEventListener('touchend', function(e) {
+					e.preventDefault();
+					dialog.show();
+				}, false);
+			}
 
-      document.querySelector('#open-dialog').addEventListener('touchend', function (e) {
-        e.preventDefault();
-        dialog.show();
-      }, false);
-    }
+			document.querySelector('#show-toast').addEventListener('touchend', function() {
+				var toast = new fries.Toast({
+					content : "Hi, I'm a Toast notification."
+				});
 
-    document.querySelector('#show-toast').addEventListener('touchend', function () {
-      var toast = new fries.Toast({ content: "Hi, I'm a Toast notification." });
+			}, false);
+		};
 
-    }, false);
-  };
+		var detect = function() {
+			if (navigator.userAgent.match(/Android/i)
+			|| navigator.userAgent.match(/webOS/i) 
+			|| navigator.userAgent.match(/iPhone/i) 
+			|| navigator.userAgent.match(/iPad/i) 
+			|| navigator.userAgent.match(/iPod/i) 
+			|| navigator.userAgent.match(/BlackBerry/i) 
+			|| navigator.userAgent.match(/Windows Phone/i)) {
+				return true;
+			} else {
+				return false;
+			}
+		};
 
-  var detect = function () {
-    if( navigator.userAgent.match(/Android/i)
-      || navigator.userAgent.match(/webOS/i)
-      || navigator.userAgent.match(/iPhone/i)
-      || navigator.userAgent.match(/iPad/i)
-      || navigator.userAgent.match(/iPod/i)
-      || navigator.userAgent.match(/BlackBerry/i)
-      || navigator.userAgent.match(/Windows Phone/i)
-    ) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  };
-
-  // To enable touch events on desktop
-  // Remove this when building in PhoneGap
-  if (detect) {
-    //window.onload = new FingerBlast('body');
-  }
-} ());
+		// To enable touch events on desktop
+		// Remove this when building in PhoneGap
+		if (detect) {
+			//window.onload = new FingerBlast('body');
+		}
+	}()); 

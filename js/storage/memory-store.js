@@ -32,6 +32,13 @@ var MemoryStore = function(successCallback, errorCallback) {
 		}
 		return result;
 	};
+	
+	this.addObject = function(dataSet, obj) {
+		if($.isArray(dataSet)) {
+			obj.id = dataSet[dataSet.length-1].id++;
+			dataSet.push(obj);			
+		}
+	};
 
 	// Used to simulate async calls. This is done to provide a consistent interface with stores (like WebSqlStore)
 	// that use async data access APIs

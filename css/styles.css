@@ -38,3 +38,11 @@ li>a.tappable-active {
     -webkit-transition-duration: .375s;
     -o-transition-duration: .375s;
 }
+
+i.large {
+	font-size: 36px;
+}
+
+.middle {
+	vertical-align: middle;
+}

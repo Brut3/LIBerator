@@ -33,16 +33,10 @@
 
 				<ul class="actions pull-right">
 					<li>
-						<a href="javascript: void(0);" class="action" title="New Project"><i class="icon-new"></i></a>
+						<a href="#newproject" class="action" title="New Project"><i class="icon-new"></i></a>
 					</li>
 					<li>
 						<a href="javascript: void(0);" class="action" title="Search"><i class="icon-search"></i></a>
-					</li>
-					<li>
-						<a href="javascript: void(0);" class="action" title="Cut"><i class="icon-cut"></i></a>
-					</li>
-					<li>
-						<a href="javascript: void(0);" class="action" title="Settings"><i class="icon-settings"></i></a>
 					</li>
 				</ul>
 			</header>
@@ -51,7 +45,7 @@
 			<div class="content">
 			<ul id="projects" class="list">
 				{{#each this}}
-				<li class="list-item-two-lines">
+				<li class="list-item-two-lines selectable">
 					<a href="#project/{{id}}">
 						<h3>{{title}}</h3>
 						<p>
@@ -65,7 +59,7 @@
 		</script>
 		<script id="project-nav-temp" type="x-handlebars-template">
 			<header class="action-bar fixed-top">
-				<a href="#" class="app-icon action" data-ignore="true"> 
+				<a href="#" class="app-icon action"> 
 					<i class="icon-up-button"></i>
 					<i class="icon-fries"></i> 
 				</a>
@@ -78,12 +72,6 @@
 					<li>
 						<a href="javascript: void(0);" class="action" title="Search"><i class="icon-search"></i></a>
 					</li>
-					<li>
-						<a href="javascript: void(0);" class="action" title="Cut"><i class="icon-cut"></i></a>
-					</li>
-					<li>
-						<a href="javascript: void(0);" class="action" title="Settings"><i class="icon-settings"></i></a>
-					</li>
 				</ul>
 			</header>
 		</script> 
@@ -94,7 +82,7 @@
 					{{title}}
 				</li>
 				{{#each this.sources}}
-				<li class="list-item-two-lines">
+				<li class="list-item-two-lines selectable">
 					<a href="#source/{{sourceId}}">
 						{{source-item}}
 					</a>
@@ -103,13 +91,101 @@
 			</ul>
 			</div>
 		</script>
-		<script src="lib/fries.js"></script>
+		<script id="new-project-nav-temp" type="x-handlebars-template">
+			<header class="action-bar fixed-top">
+				<a href="#" class="app-icon action"> 
+					<i class="icon-up-button"></i>
+					<i class="icon-fries"></i> 
+				</a>
+				<h2 class="title">New Project <span class="subtitle">Create a new project</span></h2>
+
+				<ul class="actions pull-right">
+					<li>
+						<a href="javascript: void(0);" id="submit-action" class="action" title="New Project"><i class="icon-accept"></i></a>
+					</li>
+				</ul>
+			</header>
+		</script>
+		<script id="new-project-form-temp" type="x-handlebars-template">
+			<div class="content">
+			<form class="inset">
+				<label class="block-label">Basic info</label>
+				<input id="input-title" type="text" name="title" placeholder="Title" class="input-text" />
+				<div id="toggleGroup" class="flex-group">
+				<div class="form-spinner">
+					<a href="javascript: void(0);" id="category-spinner" class="toggle-spinner">Choose Category</a>
+					<ul class="spinner">
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Essay</a>
+						</li>
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Project</a>
+						</li>
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Report</a>
+						</li>
+						<li class="spinner-item">
+							<a href="javascript: void(0);">White paper</a>
+						</li>
+					</ul>
+					</div>
+					</div>
+					<input id="category" type="hidden" name="category" value="Unknown" />
+					<div id="toggleGroup">
+						<label class="input-radio-wrapper">
+							<input type="radio" name="test" class="input-radio" value="false" />
+							<div class="input-radio-inner">
+								<div class="input-radio-button"></div>
+							</div> 
+						</label>
+						<label class="">Private project</label>
+						<br />
+						<label class="input-radio-wrapper">
+							<input type="radio" name="test" class="input-radio" id="test-radio2" value="true" />
+							<div class="input-radio-inner">
+								<div class="input-radio-button"></div>
+							</div> 
+						</label>
+						<label class="">Group project</label>
+					</div>
+					<input id="group" type="hidden" name="group" value="false"/>
+		</script>
+		<script id="new-project-add-coll-temp" type="x-handlebars-template">
+				<div id="coll-form" style="display: none">
+					<label class="block-label">Collaborators</label>
+					<div id="collaborators">
+						{{> collrow}}
+					</div>
+					<a href="javascript: void(0);" id="addnew" class="action"><i class="icon-new"></i><span class="middle">Add new</span></a>
+				</div>
+				</form>
+			</div>
+		</script>
+		<script id="collaborator-row" type="x-handlebars-template">
+			<input type="text" name="user{{collrow}}" placeholder="Username/Email" class="input-text" />
+					<div class="form-spinner">
+						<a href="javascript: void(0);" id="priviledge-spinner{{collrow}}" class="toggle-spinner">Privileges</a>
+						<ul class="spinner">
+							<li class="spinner-item">
+								<a href="javascript: void(0);">View</a>
+							</li>
+							<li class="spinner-item">
+								<a href="javascript: void(0);">Add</a>
+							</li>
+							<li class="spinner-item">
+								<a href="javascript: void(0);">Delete</a>
+							</li>
+						</ul>
+					</div>
+		</script>
 		<script src="lib/jquery-1.8.2.min.js"></script>
 		<script src="lib/handlebars.js"></script>
+		<script src="lib/fries.js"></script>    
 		<script src="lib/fingerblast.js"></script>
 		<script src="js/storage/memory-store.js"></script>
 		<script src="js/ProjectsView.js"></script>
 		<script src="js/ProjectView.js"></script>
+		<script src="js/NewProjectView.js"></script>
 		<script src="js/main.js"></script>
 		<script src="phonegap.js"></script>
 	</body>
