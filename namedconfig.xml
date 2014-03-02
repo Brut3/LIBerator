@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns       = "http://www.w3.org/ns/widgets"
-        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        xmlns:gap   = "http://phonegap.com/ns/3.1"
         id          = "com.jaraunio.liberator"
         versionCode = "10"
         version     = "0.0.1">
@@ -15,9 +15,9 @@
         Johannes Raunio
     </author>
  
-    <feature name="http://api.phonegap.com/1.0/file"/>
-    <feature name="http://api.phonegap.com/1.0/media"/>
-    <feature name="http://api.phonegap.com/1.0/network"/>
-    <feature name="http://api.phonegap.com/1.0/notification"/>
+    <feature name="http://api.phonegap.com/3.1/file"/>
+    <feature name="http://api.phonegap.com/3.1/media"/>
+    <feature name="http://api.phonegap.com/3.1/network"/>
+    <feature name="http://api.phonegap.com/3.1/notification"/>
  
 </widget>
