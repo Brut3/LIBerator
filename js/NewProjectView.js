@@ -18,7 +18,7 @@ var NewProjectView = function(project) {
 		var title = $("#input-title").val();
 		var category = $("#category").val().trim();
 		var group =  ($("#group").val()) === "true";
-		var project = {title : title, category : category, type : group ? "Group" : "Private", resources : []};
+		var project = {title : title, category : category, type : group ? "Group" : "Private", sources : []};
 		app.store.addObject(app.store.projects, project);
 		console.log(app.store.projects);  
 	};

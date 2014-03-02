@@ -3,6 +3,7 @@ var app = {
 	initialize : function() {
 		var self = this;
 		this.projectURL = /^#project\/(\d{1,})/;
+		this.addSourceURL = /^#project\/(\d{1,})\/addsource/;
 		this.newProjectURL = /^#newproject/;
 		self.registerEvents();
 		this.store = new MemoryStore(function() {
@@ -42,16 +43,27 @@ var app = {
 			this.slidePage(this.homePage);
 			return;
 		}
+		//Add Source
+		var matchAddSource = hash.match(this.addSourceURL);
+		if (matchAddSource) {
+			console.log("Matched AddSource!");
+			self.slidePage(new AddSourceView({id : matchAddSource[1]}, this.store).render());
+			return;
+		}
+		//Project
 		var matchProject = hash.match(this.projectURL);
 		if (matchProject) {
 			self.store.findById(self.store.projects, Number(matchProject[1]), function(project) {
 				self.slidePage(new ProjectView(project).render());
 			});
+			return;
 		}
+		//New Project
 		var matchNewProject = hash.match(this.newProjectURL);
 		if (matchNewProject) {
 			self.slidePage(new NewProjectView().render());
 		}
+		
 
 	},
 
