@@ -119,7 +119,7 @@ var MemoryStore = function(successCallback, errorCallback) {
 			firstName : "Fred",
 			lastName : "Brooks" 
 		}],
-		category : "Vook",
+		category : "Book",
 		fileid : 2
 	}];
 	
@@ -129,6 +129,10 @@ var MemoryStore = function(successCallback, errorCallback) {
 		id : 1,
 		name : "art_of_war.epub",
 		size : 148,
+	}, {
+		id : 2,
+		name : "textbook.pdf",
+		size : 2054,
 	}];
 	
 	asyncCall(successCallback);

@@ -3,8 +3,11 @@ var app = {
 	initialize : function() {
 		var self = this;
 		this.projectURL = /^#project\/(\d{1,})/;
+		this.newSourceURL = /^#project\/(\d{1,})\/addsource\/newsource/;
 		this.addSourceURL = /^#project\/(\d{1,})\/addsource/;
 		this.newProjectURL = /^#newproject/;
+		this.missingViewURL = /(\S*)\/missing$/;
+		this.prevPages = [];
 		self.registerEvents();
 		this.store = new MemoryStore(function() {
 			self.route();
@@ -14,60 +17,55 @@ var app = {
 	registerEvents : function() {
 		var self = this;
 		$(window).on('hashchange', $.proxy(this.route, this));
-		// Check of browser supports touch events...
-		//if (document.documentElement.hasOwnProperty('ontouchstart')) {
-			// ... if yes: register touch event listener to change the "selected" state of the item
-			//$('body').on('touchstart', 'a', function(event) {
-				//$(event.target).addClass('tappable-active');
-			//});
-			//$('body').on('touchend', 'a', function(event) {
-				//$(event.target).removeClass('tappable-active');
-			//});
-		//} else {
-			// ... if not: register mouse events instead
-			//$('body').on('mousedown', 'a', function(event) {
-				//$(event.target).addClass('tappable-active');
-			//});
-			//$('body').on('mouseup', 'a', function(event) {
-				//$(event.target).removeClass('tappable-active');
-			//});
-		//}
 	},
 
 	route : function() {
-		console.log("Routing!");
 		var self = this;
 		var hash = window.location.hash;
+		console.log("Routing: " + hash);
 		if (!hash) {
 			this.homePage = new ProjectsView(this.store).render();
-			this.slidePage(this.homePage);
+			this.slidePage(this.homePage, "home");
 			return;
 		}
+		var matchMissing = hash.match(this.missingViewURL);
+		if (matchMissing) {
+			console.log("Matched Missing! " + matchMissing);
+			self.slidePage(new MissingView().render(), "missing");
+			return;
+		}
+		
+		//New Source
+		var matchNewSource = hash.match(this.newSourceURL);
+		if (matchNewSource) {
+			self.slidePage(new NewSourceView({id : matchNewSource[1]}, this.store).render(), "newsource");
+			return;
+		}
+		
 		//Add Source
 		var matchAddSource = hash.match(this.addSourceURL);
 		if (matchAddSource) {
-			console.log("Matched AddSource!");
-			self.slidePage(new AddSourceView({id : matchAddSource[1]}, this.store).render());
+			self.slidePage(new AddSourceView({id : matchAddSource[1]}, this.store).render(), "addsource");
 			return;
 		}
 		//Project
 		var matchProject = hash.match(this.projectURL);
 		if (matchProject) {
 			self.store.findById(self.store.projects, Number(matchProject[1]), function(project) {
-				self.slidePage(new ProjectView(project).render());
+				self.slidePage(new ProjectView(project).render(), "project");
 			});
 			return;
 		}
 		//New Project
 		var matchNewProject = hash.match(this.newProjectURL);
 		if (matchNewProject) {
-			self.slidePage(new NewProjectView().render());
+			self.slidePage(new NewProjectView().render(), "newproject");
 		}
 		
 
 	},
 
-	slidePage : function(page) {
+	slidePage : function(page, name) {
 
 		var currentPageDest, self = this;
 
@@ -76,20 +74,25 @@ var app = {
 			$(page.el).attr('class', 'page stage-center').attr('id', 'homePage');
 			$('body').append(page.el);
 			this.currentPage = page;
+			this.prevPages.push(name);
 			//trigger navbar reflow with custom event
 			window.dispatchEvent(new CustomEvent('resize', {}));
 			return;
 		}
-
+	
 		// Cleaning up: remove old pages that were moved out of the viewport
 		$('.stage-right, .stage-left').not('#homePage').remove();
-
-		if (page === app.homePage) {
-			// Always apply a Back transition (slide from left) when we go back to the search page
+			
+		if (name === this.prevPages[this.prevPages.length-2]) {
+			console.log("Popping: " + this.prevPages[this.prevPages.length-1]);
+			this.prevPages.pop();
+			// Always apply a Back transition (slide from left) when we go back
 			$(page.el).attr('class', 'page stage-left');
 			currentPageDest = "stage-right";
 		} else {
 			// Forward transition (slide from right)
+			console.log("Pushing: " + name);
+			this.prevPages.push(name);
 			$(page.el).attr('class', 'page stage-right');
 			currentPageDest = "stage-left";
 		}

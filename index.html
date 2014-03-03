@@ -68,10 +68,10 @@
 			<header class="action-bar fixed-bottom">
 				<ul class="actions flex" data-overflow="false">
 					<li>
-						<a href="#project/{{id}}/addsource" class="action" title="New Project"><i class="icon-new"></i></a>
+						<a href="#project/{{id}}/addsource" class="action" title="Add Source"><i class="icon-new"></i></a>
 					</li>
 					<li>
-						<a href="javascript: void(0);" class="action" title="Search"><i class="icon-group"></i></a>
+						<a href="javascript: void(0);" class="action" title="Collaborators"><i class="icon-group"></i></a>
 					</li>
 					<li>
 						<a href="javascript: void(0);" class="action" title="Search"><i class="icon-search"></i></a>
@@ -87,7 +87,7 @@
 				</li>
 				{{#each this.sources}}
 				<li class="list-item-two-lines selectable">
-					<a href="#source/{{sourceId}}">
+					<a href="#source/{{sourceId}}/missing">
 						{{source-item}}
 					</a>
 				</li>
@@ -116,24 +116,24 @@
 				<label class="block-label">Basic info</label>
 				<input id="input-title" type="text" name="title" placeholder="Title" class="input-text" />
 				<div id="toggleGroup" class="flex-group">
-				<div class="form-spinner">
-					<a href="javascript: void(0);" id="category-spinner" class="toggle-spinner">Choose Category</a>
-					<ul class="spinner">
-						<li class="spinner-item">
-							<a href="javascript: void(0);">Essay</a>
-						</li>
-						<li class="spinner-item">
-							<a href="javascript: void(0);">Project</a>
-						</li>
-						<li class="spinner-item">
-							<a href="javascript: void(0);">Report</a>
-						</li>
-						<li class="spinner-item">
-							<a href="javascript: void(0);">White paper</a>
-						</li>
-					</ul>
+					<div class="form-spinner">
+						<a href="javascript: void(0);" id="category-spinner" class="toggle-spinner">Choose Category</a>
+						<ul class="spinner">
+							<li class="spinner-item">
+								<a href="javascript: void(0);">Essay</a>
+							</li>
+							<li class="spinner-item">
+								<a href="javascript: void(0);">Project</a>
+							</li>
+							<li class="spinner-item">
+								<a href="javascript: void(0);">Report</a>
+							</li>
+							<li class="spinner-item">
+								<a href="javascript: void(0);">White paper</a>
+							</li>
+						</ul>
 					</div>
-					</div>
+				</div>
 					<input id="category" type="hidden" name="category" value="Unknown" />
 					<div id="toggleGroup">
 						<label class="input-radio-wrapper">
@@ -201,7 +201,7 @@
 			<header class="action-bar fixed-bottom">
 				<ul class="actions flex" data-overflow="false">
 					<li>
-						<a href="javascript: void(0);" class="action" title="New Source"><i class="icon-new"></i></a>
+						<a href="#project/{{id}}/addsource/newsource" class="action" title="New Source"><i class="icon-new"></i></a>
 					</li>
 					<li>
 						<a href="javascript: void(0);" class="action" title="Search"><i class="icon-search"></i></a>
@@ -218,6 +218,91 @@
 			</ul>
 			</div>
 		</script>
+		<script id="new-source-nav-temp" type="x-handlebars-template">
+			<header class="action-bar fixed-top">
+				<a href="#project/{{id}}/addsource" class="app-icon action"> 
+					<i class="icon-up-button"></i>
+					<i class="icon-fries"></i> 
+				</a>
+				<h2 class="title">New Source <span class="subtitle">Create a new source.</span></h2>
+
+				<ul class="actions pull-right">
+					<li>
+						<a href="#project/{{id}}/addsource" id="new-source-action" class="action" title="Create Source" disabled="true">
+							<i class="icon-accept"></i>
+						</a>
+					</li>
+				</ul>
+			</header>
+		</script>
+		<script id="new-source-form-temp" type="x-handlebars-template">
+			<div class="content">
+			<form id="newsource" class="form-flex inset">
+				<label class="block-label">Basic info</label>
+				<div class="form-spinner">
+					<a href="javascript: void(0);" id="category-spinner" class="toggle-spinner">Choose Category</a>
+					<ul class="spinner">
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Book</a>
+						</li>
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Paper</a>
+						</li>
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Web page</a>
+						</li>
+						<li class="spinner-item">
+							<a href="javascript: void(0);">Journal Article</a>
+						</li>
+					</ul>
+				</div>
+			<input id="category" type="hidden" name="category" value="Unknown" />
+			</form>
+			</div>
+		</script>
+		<script id="file-url-buttons-temp" type="x-handlebars-template">
+			<div class="form-actions">
+				{{#if url}}
+				<div class="flex-group">
+					<input type="text" id="url" placeholder="URL" class="input-text flex2" />
+					<button id="confirm-url" class="btn-small">OK</button>
+				</div>
+				{{else}}
+				<button id="choose-button" class="btn btn-block">Choose file</button>
+				{{/if}}
+			</div>
+		</script>
+		<script id="web-details-form-temp" type="x-handlebars-template">
+			<div class="form-actions">
+				<p id="url-confirmed">{{url}}</p>
+				{{> title-author}}
+			</div>
+		</script>
+		<script id="title-author-temp" type="x-handlebars-template">
+				<label class="block-label">Details</label>
+					<input type="text" id="title" placeholder="Title" class="input-text" />
+					<input type="text" id="author" placeholder="Author" class="input-text" />
+		</script>
+		<script id="book-details-temp" type="x-handlebars-template">
+			<div class="form-actions">
+				<p>{{file}}</p>
+				{{> title-author}}
+					<input type="text" id="published" placeholder="Published" class="input-text" />
+				<div class="flex-group">
+					<input type="text" id="from" placeholder="From page" class="input-text flex1" />
+					<input type="text" id="to" placeholder="To page" class="input-text flex1" />
+				</div>
+			</div>
+		</script>
+		<script id="missing-view-temp" type="x-handlebars-template">
+			<header class="action-bar fixed-top">
+				<a href="javascript: window.history.back();" class="app-icon action"> 
+					<i class="icon-up-button"></i>
+					<i class="icon-fries"></i> 
+				</a>
+				<h2 class="title">Abstracted function! <span class="subtitle">Included in full version</span></h2>
+			</header>
+		</script>		
 		<script src="lib/jquery-1.8.2.min.js"></script>
 		<script src="lib/handlebars.js"></script>
 		<script src="lib/fries.js"></script>    
@@ -227,6 +312,8 @@
 		<script src="js/ProjectView.js"></script>
 		<script src="js/NewProjectView.js"></script>
 		<script src="js/AddSourceView.js"></script>
+		<script src="js/NewSourceView.js"></script>
+		<script src="js/MissingView.js"></script>
 		<script src="js/main.js"></script>
 		<script src="phonegap.js"></script>
 	</body>

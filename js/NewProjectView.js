@@ -20,7 +20,7 @@ var NewProjectView = function(project) {
 		var group =  ($("#group").val()) === "true";
 		var project = {title : title, category : category, type : group ? "Group" : "Private", sources : []};
 		app.store.addObject(app.store.projects, project);
-		console.log(app.store.projects);  
+		  
 	};
 	
 	this.changeSpinnerValue = function(event) {
